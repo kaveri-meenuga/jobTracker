@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobTrack - Job Application Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>JobTrack</h2>
+            <nav aria-label="Main navigation">
+                <a href="#dashboard">Dashboard</a>
+                <a href="#reminders">Reminders</a>
+                <a href="#applications">My Applications</a>
+                <a href="#kanban">Kanban Board</a>
+                <a href="#interview-prep">Interview Prep</a>
+                <a href="#analytics">Analytics</a>
+                <a href="#skill-analyzer">Skill Analyzer</a>
+            </nav>
+        </aside>
+
+        <main class="main-content" id="dashboard">
+            <header>
+                <div>
+                    <h1>Welcome to JobTrack!</h1>
+                    <p>Track your job search journey in one place.</p>
+                </div>
+                <div class="header-actions">
+                    <button id="themeToggleBtn" type="button" aria-label="Switch to dark mode" aria-pressed="false">Dark mode</button>
+                    <button id="addJobBtn" type="button">+ Add Job</button>
+                </div>
+            </header>
+
+            <section class="stats" aria-label="Application statistics">
+                <div class="stat-card">
+                    <h3>Total Applications</h3>
+                    <p id="totalJobs">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Shortlisted</h3>
+                    <p id="shortlisted">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Interviews</h3>
+                    <p id="interviews">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Rejected</h3>
+                    <p id="rejected">0</p>
+                </div>
+            </section>
+
+            <section class="reminders-section" id="reminders" aria-labelledby="remindersTitle">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="remindersTitle">Reminders</h2>
+                        <p>Keep upcoming interviews and follow-ups on your radar.</p>
+                    </div>
+                </div>
+                <div id="reminderList" class="reminder-list" aria-live="polite"></div>
+            </section>
+
+            <section class="analytics-section" id="analytics" aria-labelledby="analyticsTitle">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="analyticsTitle">Job search analytics</h2>
+                        <p>A quick look at your applications and interview preparation.</p>
+                    </div>
+                </div>
+                <div class="analytics-grid">
+                    <article class="analytics-card">
+                        <h3>Applications by status</h3>
+                        <ul class="chart-list" id="statusChart" aria-label="Application counts by status"></ul>
+                    </article>
+                    <article class="analytics-card">
+                        <h3>Applications over the last 6 months</h3>
+                        <div class="monthly-chart" id="monthlyChart" aria-label="Applications by month"></div>
+                    </article>
+                    <article class="analytics-card prep-analytics-card">
+                        <h3>Interview preparation</h3>
+                        <p class="analytics-highlight" id="prepAnalyticsPercent">0%</p>
+                        <p class="analytics-caption" id="prepAnalyticsCaption">0 of 12 questions prepared</p>
+                        <progress id="prepAnalyticsBar" value="0" max="12" aria-label="Interview preparation summary"></progress>
+                    </article>
+                </div>
+            </section>
+
+            <section class="skill-analyzer-section" id="skill-analyzer" aria-labelledby="skillAnalyzerTitle">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="skillAnalyzerTitle">Skill gap analyzer</h2>
+                        <p>Compare a job description with your skills to spot topics to practice.</p>
+                    </div>
+                </div>
+                <p class="analyzer-note">This browser-only checker looks for supported skill keywords. Your text is not uploaded or saved.</p>
+                <form id="skillAnalyzerForm">
+                    <label for="jobDescriptionInput">Paste the job description</label>
+                    <textarea id="jobDescriptionInput" required rows="6" placeholder="Paste the role requirements here..."></textarea>
+
+                    <label for="mySkillsInput">Your skills (comma separated)</label>
+                    <textarea id="mySkillsInput" required rows="3" placeholder="e.g. HTML, CSS, JavaScript"></textarea>
+
+                    <button class="save-button analyzer-button" type="submit">Compare skills</button>
+                </form>
+                <div id="skillResults" class="skill-results" aria-live="polite" hidden>
+                    <h3 id="skillMatchSummary"></h3>
+                    <div class="skill-result-columns">
+                        <section>
+                            <h4>Skills you have</h4>
+                            <ul id="matchedSkills"></ul>
+                        </section>
+                        <section>
+                            <h4>Skills to practice</h4>
+                            <ul id="missingSkills"></ul>
+                        </section>
+                    </div>
+                    <p id="skillAnalysisNote" class="analyzer-note"></p>
+                </div>
+            </section>
+
+            <section class="kanban-section" id="kanban" aria-labelledby="kanbanTitle">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="kanbanTitle">Application pipeline</h2>
+                        <p>Move an application to another stage using its status menu.</p>
+                    </div>
+                </div>
+                <div class="kanban-board" id="kanbanBoard" aria-label="Applications grouped by status"></div>
+            </section>
+
+            <section class="prep-section" id="interview-prep" aria-labelledby="prepTitle">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="prepTitle">Interview preparation</h2>
+                        <p>Mark questions as prepared to track your practice.</p>
+                    </div>
+                    <p class="prep-progress" id="prepProgress" aria-live="polite">0 of 12 prepared</p>
+                </div>
+                <progress id="prepProgressBar" value="0" max="12" aria-label="Interview preparation progress"></progress>
+                <div class="prep-grid" id="prepQuestions"></div>
+            </section>
+
+            <section class="applications" id="applications">
+                <div class="applications-heading">
+                    <h2>Recent Applications</h2>
+                    <span id="applicationResultCount" class="result-count" aria-live="polite">0 applications</span>
+                </div>
+                <p id="storageMessage" class="storage-message" role="alert" hidden></p>
+                <div class="application-filters">
+                    <label class="filter-field" for="applicationSearch">
+                        Search
+                        <input id="applicationSearch" type="search" placeholder="Company or role">
+                    </label>
+                    <label class="filter-field" for="statusFilter">
+                        Status
+                        <select id="statusFilter">
+                            <option value="">All statuses</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Assessment">Assessment</option>
+                            <option value="Interview">Interview</option>
+                            <option value="Selected">Selected</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </label>
+                    <label class="filter-field" for="sortApplications">
+                        Sort by
+                        <select id="sortApplications">
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                            <option value="company">Company A-Z</option>
+                        </select>
+                    </label>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Company</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobList">
+                        <tr>
+                            <td colspan="4">No applications yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <dialog id="jobDialog" aria-labelledby="jobDialogTitle">
+        <form id="jobForm">
+            <div class="dialog-heading">
+                <div>
+                    <h2 id="jobDialogTitle">Add an application</h2>
+                    <p>Keep your job search details in one place.</p>
+                </div>
+                <button class="close-dialog" id="closeJobDialog" type="button" aria-label="Close form">&times;</button>
+            </div>
+
+            <label for="companyInput">Company</label>
+            <input id="companyInput" name="company" type="text" required maxlength="80" placeholder="e.g. Acme Inc.">
+
+            <label for="roleInput">Job title</label>
+            <input id="roleInput" name="role" type="text" required maxlength="80" placeholder="e.g. Frontend Developer">
+
+            <div class="form-row">
+                <div>
+                    <label for="dateInput">Applied date</label>
+                    <input id="dateInput" name="date" type="date" required>
+                </div>
+                <div>
+                    <label for="statusInput">Status</label>
+                    <select id="statusInput" name="status" required>
+                        <option value="Applied">Applied</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Selected">Selected</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label for="reminderDateInput">Reminder date <span class="optional-label">(optional)</span></label>
+                    <input id="reminderDateInput" name="reminderDate" type="date">
+                </div>
+                <div>
+                    <label for="reminderTypeInput">Reminder type</label>
+                    <select id="reminderTypeInput" name="reminderType">
+                        <option value="Follow-up">Follow-up</option>
+                        <option value="Interview">Interview</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="cancel-button" id="cancelJobBtn" type="button">Cancel</button>
+                <button class="save-button" id="saveJobBtn" type="submit">Save application</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>
